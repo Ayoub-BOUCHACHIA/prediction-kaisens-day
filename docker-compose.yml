@@ -1,0 +1,33 @@
+version: '2.4'
+
+services:
+  mongodb:
+    image: mongo
+    ports:
+      - "27017:27017"
+    networks:
+      - mynetwork
+  
+  flask_server:
+    build: ./flask_server
+    expose:
+      - "5000"
+    ports:
+      - "5000:5000"
+    depends_on:
+      - mongodb
+    networks:
+      - mynetwork
+    volumes:
+      - ./shared-directory:/data
+
+  scrapping_app:
+    build: ./scrapping_app
+    networks:
+      - mynetwork
+    volumes:
+      - ./shared-directory:/data
+
+networks:
+  mynetwork:
+    driver: bridge
